@@ -1,0 +1,29 @@
+package com.trabalho.Faculdade.model;
+
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Grupo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nome;
+    @ManyToOne
+    @JoinColumn(name = "professor_id")
+    private Professor orientador;
+    @OneToOne(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Trabalho trabalho;
+}

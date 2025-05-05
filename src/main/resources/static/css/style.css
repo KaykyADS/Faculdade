@@ -1,0 +1,10 @@
+  .form-check-input.banca-checkbox {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.15rem;  /* alinha verticalmente com o texto */
+  }
+  /* label menor e com quebra de linha controlada */
+  .form-check-label.banca-label {
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
