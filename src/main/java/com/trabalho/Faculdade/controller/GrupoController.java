@@ -4,12 +4,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.trabalho.Faculdade.model.Aluno;
 import com.trabalho.Faculdade.model.Grupo;
 import com.trabalho.Faculdade.model.Professor;
-import com.trabalho.Faculdade.persistence.grupo.GrupoService;
-import com.trabalho.Faculdade.persistence.professor.ProfessorService;
+import com.trabalho.Faculdade.persistence.GrupoService;
+import com.trabalho.Faculdade.persistence.ProfessorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -148,8 +150,12 @@ public class GrupoController {
 				grupos = grupoService.listar();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			erro = "Erro ao realizar operação.";
+			erro = e.getMessage();
+            Pattern pattern = Pattern.compile("Erro[^!]*!");
+            Matcher matcher = pattern.matcher(erro);
+            if (matcher.find()) {
+                erro = matcher.group();
+            }
 		}
 
 		model.addAttribute("erro", erro);

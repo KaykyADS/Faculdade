@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.trabalho.Faculdade.model.Area;
-import com.trabalho.Faculdade.persistence.area.AreaService;
+import com.trabalho.Faculdade.persistence.AreaService;
 
 
 @Controller

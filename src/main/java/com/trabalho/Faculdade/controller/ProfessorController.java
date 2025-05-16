@@ -3,6 +3,8 @@ package com.trabalho.Faculdade.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.trabalho.Faculdade.model.Area;
+import com.trabalho.Faculdade.model.Grupo;
 import com.trabalho.Faculdade.model.Professor;
-import com.trabalho.Faculdade.persistence.area.AreaService;
-import com.trabalho.Faculdade.persistence.professor.ProfessorService;
+import com.trabalho.Faculdade.persistence.AreaService;
+import com.trabalho.Faculdade.persistence.ProfessorService;
 
 
 @Controller
@@ -36,9 +39,11 @@ public class ProfessorController {
 		Professor prof = new Professor();
 		List<Professor> profs = new ArrayList<>();
 		List<Area> areas = new ArrayList<>();
+		List<Grupo> grupos = new ArrayList<>();
 		areas = aService.getAllArea();
 		String erro = "";
 		String saida = "";
+		String quantidade = "";
 		
 		try {
 			if (id != null) {
@@ -50,6 +55,10 @@ public class ProfessorController {
 				} else if ("atualizar".equalsIgnoreCase(acao)) {
 					prof = service.getProfessorById(id);
 					profs = null;
+				} else if ("quantidade".equalsIgnoreCase(acao)) {
+					quantidade = String.valueOf(service.qtdGruposProfessor(id));
+					grupos = service.gruposDoProfessor(id);
+					profs = null;
 				}
 			}
 		} catch (Exception e) {
@@ -60,6 +69,8 @@ public class ProfessorController {
 			model.addAttribute("professor", prof);
 			model.addAttribute("professores", profs);
 			model.addAttribute("areas", areas);
+			model.addAttribute("quantidade", quantidade);
+			model.addAttribute("grupos", grupos);
 		}
 		return new ModelAndView("formularioProfessor");
 	}
@@ -123,7 +134,12 @@ public class ProfessorController {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); 
+            erro = e.getMessage();
+            Pattern pattern = Pattern.compile("Erro[^!]*!");
+            Matcher matcher = pattern.matcher(erro);
+            if (matcher.find()) {
+                erro = matcher.group();
+            }
         }
         areas = aService.getAllArea(); 
         model.addAttribute("erro", erro);

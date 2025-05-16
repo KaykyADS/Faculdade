@@ -1,10 +1,11 @@
 package com.trabalho.Faculdade.controller;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,19 +18,19 @@ import org.springframework.web.servlet.ModelAndView;
 import com.trabalho.Faculdade.model.Apresentacao;
 import com.trabalho.Faculdade.model.Grupo;
 import com.trabalho.Faculdade.model.Professor;
-import com.trabalho.Faculdade.persistence.apresentacao.ApresentacaoService;
-import com.trabalho.Faculdade.persistence.grupo.GrupoService;
-import com.trabalho.Faculdade.persistence.professor.ProfessorService;
+import com.trabalho.Faculdade.persistence.ApresentacaoService;
+import com.trabalho.Faculdade.persistence.GrupoService;
+import com.trabalho.Faculdade.persistence.ProfessorService;
 
 @Controller
 public class ApresentacaoController {
 
     @Autowired
     private ApresentacaoService service;
-    
-    @Autowired 
+
+    @Autowired
     private GrupoService gService;
-    
+
     @Autowired
     private ProfessorService pService;
 
@@ -81,102 +82,82 @@ public class ApresentacaoController {
 
     // Lida com os formulários de apresentação (POST)
     @RequestMapping(name = "formularioApresentacao", value = "/formularioApresentacao", method = RequestMethod.POST)
-    public ModelAndView apresentacaoPost(@RequestParam Map<String, String> params, ModelMap model, @RequestParam(name = "bancaIds", required = false) List<Long> banca) {
+    public ModelAndView apresentacaoPost(@RequestParam Map<String, String> params, ModelMap model,
+            @RequestParam(name = "bancaIds", required = false) List<Long> banca) {
         Long id = null;
         if (params.get("id") != null && !params.get("id").isEmpty()) {
             id = Long.parseLong(params.get("id"));
         }
         Long idGrupo = null;
         if (params.get("grupoId") != null && !params.get("grupoId").isEmpty()) {
-        	idGrupo = Long.parseLong(params.get("grupoId"));
+            idGrupo = Long.parseLong(params.get("grupoId"));
         }
         LocalDate data = null;
         if (params.get("data") != null && !params.get("data").isEmpty()) {
-        	data = LocalDate.parse(params.get("data"));
+            data = LocalDate.parse(params.get("data"));
         }
         String tipo = params.get("tipoTcc");
         Double nota = null;
         if (params.get("nota") != null && !params.get("nota").isEmpty()) {
-        	nota = Double.parseDouble(params.get("nota"));
+            nota = Double.parseDouble(params.get("nota"));
         }
         String cmd = params.get("botao");
         List<Grupo> grupos = gService.listar();
-        
-        
+
         Apresentacao apresentacao = new Apresentacao();
         if ("Inserir".equalsIgnoreCase(cmd) || "Atualizar".equalsIgnoreCase(cmd)) {
-        	apresentacao.setTipoTcc(tipo);
-        	apresentacao.setNota(nota);
-        	apresentacao.setData(data);
+            apresentacao.setTipoTcc(tipo);
+            apresentacao.setNota(nota);
+            apresentacao.setData(data);
         }
-        
+
         String saida = "";
         String erro = "";
         List<Apresentacao> apresentacoes = new ArrayList<>();
 
         try {
-        	if ("Inserir".equalsIgnoreCase(cmd)) {
-        	    if (banca == null) {
-        	        banca = new ArrayList<>();
-        	    }
-                if (ChronoUnit.DAYS.between(LocalDate.now(), data) < 7) {
-                    erro = "Data de apresentação deve ser marcada com 7 dias de antecedência";
-                } else {
-                    if (banca.size() != 3) {
-                        erro = "Banca deve conter exatamente 3 professores";
-                    } else {
-                        if (gService.verificaSeTemAlunos(idGrupo)) {
-                            Grupo g = gService.getGrupoById(idGrupo);
-                            double minPerc = gService.findPercentualMinGrupo(idGrupo);
-
-                            if ("TCC1".equals(tipo) && minPerc < 75) {
-                                erro = "Todos do grupo devem ter no mínimo 75% de conclusão para TCC1";
-
-                            } else if ("TCC2".equals(tipo) && minPerc < 90) {
-                                erro = "Todos do grupo devem ter no mínimo 90% de conclusão para TCC2";
-
-                            } else {
-                                List<Professor> professores = pService.listarPorId(banca);
-                                apresentacao.setGrupo(g);
-                                apresentacao.setTipoTcc(tipo);
-                                apresentacao.setNota(nota);
-                                apresentacao.setData(data);
-                                apresentacao.setBanca(professores);
-
-                                service.saveApresentacao(apresentacao);
-                                saida = "Apresentação cadastrada com sucesso.";
-                                apresentacao = null;
-                            }
-                        }
-                        else {
-                            erro = "Grupo não tem alunos";
-                        }
-                    }
+            if ("Inserir".equalsIgnoreCase(cmd)) {
+                if (banca == null) {
+                    banca = new ArrayList<>();
                 }
-        	}
+                if (gService.verificaSeTemAlunos(idGrupo)) {
+                    Grupo g = gService.getGrupoById(idGrupo);
+                    System.out.println("*********************************Tamanho da banca: **********************************" + banca.size());
+                    List<Professor> professores = pService.listarPorId(banca);
+                    apresentacao.setGrupo(g);
+                    apresentacao.setTipoTcc(tipo);
+                    apresentacao.setNota(nota);
+                    apresentacao.setData(data);
+                    apresentacao.setBanca(professores);
+
+                    service.saveApresentacao(apresentacao);
+                    saida = "Apresentação cadastrada com sucesso.";
+                    apresentacao = null;
+                }
+            }
             if ("Atualizar".equalsIgnoreCase(cmd)) {
-            	if (banca == null) {
-        	        banca = new ArrayList<>();
-        	    }
-            	if (id == null) {
-            		erro = "Apresentação não encontrada para atualizar";
-            	} else {
-            		if (banca.size() != 3) {
-            	        erro = "Banca deve conter exatamente 3 professores para atualizar";
-            	    } else {
-		            	apresentacao = service.getApresentacaoById(id);
-		            	apresentacao.setTipoTcc(tipo);
-		            	apresentacao.setNota(nota);
-		            	apresentacao.setData(data);
-		            	Grupo g = gService.getGrupoById(idGrupo);
-		            	apresentacao.setGrupo(g);
-		            	List<Professor> professores = pService.listarPorId(banca);
-		            	apresentacao.setBanca(professores);
-		            	service.saveApresentacao(apresentacao);
-		                saida = "Apresentação atualizada com sucesso.";
-		                apresentacao = null;
-            	    }
-            	}
+                if (banca == null) {
+                    banca = new ArrayList<>();
+                }
+                if (id == null) {
+                    erro = "Apresentação não encontrada para atualizar";
+                } else {
+                    Apresentacao apresentacaoExistente = service.getApresentacaoById(id);
+
+                    apresentacaoExistente.setTipoTcc(tipo);
+                    apresentacaoExistente.setNota(nota);
+                    apresentacaoExistente.setData(data);
+
+                    Grupo g = gService.getGrupoById(idGrupo);
+                    apresentacaoExistente.setGrupo(g);
+
+                    List<Professor> professores = pService.listarPorId(banca);
+                    apresentacaoExistente.setBanca(professores);
+
+                    service.saveApresentacao(apresentacaoExistente);
+                    saida = "Apresentação atualizada com sucesso.";
+                    apresentacao = null;
+                }
             }
             if ("Listar".equalsIgnoreCase(cmd)) {
                 apresentacoes = service.listar();
@@ -186,10 +167,15 @@ public class ApresentacaoController {
                 apresentacoes = service.findApresentacoesDia(LocalDate.now());
             }
         } catch (Exception e) {
-        	throw new RuntimeException("Erro ao salvar apresentação", e);
+            erro = e.getMessage();
+            Pattern pattern = Pattern.compile("Erro[^!]*!");
+            Matcher matcher = pattern.matcher(erro);
+            if (matcher.find()) {
+                erro = matcher.group();
+            }
         } finally {
             if (!"Listar".equalsIgnoreCase(cmd) && !"Buscar".equalsIgnoreCase(cmd)) {
-                apresentacoes = null;   
+                apresentacoes = null;
             }
         }
 

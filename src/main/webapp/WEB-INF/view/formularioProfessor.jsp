@@ -48,12 +48,15 @@
 						value="<c:out value='${professor.titulacao}'/>"
 						onchange="checarInput(event)" onkeyup="checarInput(event)">
 				</div>
-				<div class="border rounded bg-dark p-2 mb-3" style="max-height: 200px; overflow-y: auto;" id="banca-container">
+				<div class="border rounded bg-dark p-2 mb-3"
+					style="max-height: 200px; overflow-y: auto;" id="banca-container">
 					<c:forEach var="a" items="${areas}">
 						<div class="form-check m-0 d-flex align-items-center">
-							<input class="form-check-input me-2" type="checkbox" name="areasIds" value="${a.id}" id="area-${a.id}" 
+							<input class="form-check-input me-2" type="checkbox"
+								name="areasIds" value="${a.id}" id="area-${a.id}"
 								style="width: 18px; height: 18px;" onchange="checarInput()">
-							<label class="form-check-label text-light small" for="area-${a.id}">${a.nome}</label>
+							<label class="form-check-label text-light small"
+								for="area-${a.id}">${a.nome}</label>
 						</div>
 					</c:forEach>
 				</div>
@@ -83,6 +86,31 @@
 			</div>
 		</c:if>
 
+		<c:if test="${not empty quantidade}">
+			<div
+				class="mt-3 w-auto mx-auto d-flex align-items-center justify-content-center"
+				style="height: 100px;">
+				<p class="text-light display-6 fw-bold mb-0">Quantidade de
+					grupos: ${quantidade}</p>
+			</div>
+			<table class="table table-dark table-striped mt-4">
+				<thead>
+					<tr>
+						<th>Nome do Grupo</th>
+						<th>Orientador</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="g" items="${grupos}">
+						<tr>
+							<td>${g.nome}</td>
+							<td>${g.orientador.nome}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</c:if>
+
 		<c:if test="${not empty professores}">
 			<table class="table table-dark table-striped mt-4">
 				<thead>
@@ -102,6 +130,8 @@
 								class="btn btn-danger btn-sm">Excluir</a></td>
 							<td><a href="formularioProfessor?acao=atualizar&id=${p.id}"
 								class="btn btn-warning btn-sm">Editar</a></td>
+							<td><a href="formularioProfessor?acao=quantidade&id=${p.id}"
+								class="btn btn-warning btn-sm">Grupos</a></td>
 						</tr>
 					</c:forEach>
 				</tbody>

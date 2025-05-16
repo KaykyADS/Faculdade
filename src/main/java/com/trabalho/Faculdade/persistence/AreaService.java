@@ -1,4 +1,4 @@
-package com.trabalho.Faculdade.persistence.area;
+package com.trabalho.Faculdade.persistence;
 
 import java.util.List;
 

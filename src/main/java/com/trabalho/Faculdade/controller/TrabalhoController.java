@@ -16,10 +16,10 @@ import com.trabalho.Faculdade.model.Area;
 import com.trabalho.Faculdade.model.Grupo;
 import com.trabalho.Faculdade.model.Subarea;
 import com.trabalho.Faculdade.model.Trabalho;
-import com.trabalho.Faculdade.persistence.area.AreaService;
-import com.trabalho.Faculdade.persistence.grupo.GrupoService;
-import com.trabalho.Faculdade.persistence.subarea.SubareaService;
-import com.trabalho.Faculdade.persistence.trabalho.TrabalhoService;
+import com.trabalho.Faculdade.persistence.AreaService;
+import com.trabalho.Faculdade.persistence.GrupoService;
+import com.trabalho.Faculdade.persistence.SubareaService;
+import com.trabalho.Faculdade.persistence.TrabalhoService;
 
 
 @Controller

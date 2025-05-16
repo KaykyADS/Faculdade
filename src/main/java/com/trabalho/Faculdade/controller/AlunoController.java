@@ -3,6 +3,8 @@ package com.trabalho.Faculdade.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.trabalho.Faculdade.model.Aluno;
 import com.trabalho.Faculdade.model.Grupo;
-import com.trabalho.Faculdade.persistence.aluno.AlunoService;
-import com.trabalho.Faculdade.persistence.grupo.GrupoService;
+import com.trabalho.Faculdade.persistence.AlunoService;
+import com.trabalho.Faculdade.persistence.GrupoService;
 
 
 @Controller
@@ -111,7 +113,7 @@ public class AlunoController {
 	            	aluno.setPercentualConclusao(percentual);
 	            	Grupo grupo = gService.getGrupoById(idGrupo);
 	            	aluno.setGrupo(grupo);
-	            	aluno.setGrupo(grupo);
+	            	service.saveAluno(aluno);
 	                saida = "Aluno atualizado com sucesso.";
 	                aluno = null;
             	}
@@ -133,7 +135,12 @@ public class AlunoController {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); 
+            erro = e.getMessage();
+            Pattern pattern = Pattern.compile("Erro[^!]*!");
+            Matcher matcher = pattern.matcher(erro);
+            if (matcher.find()) {
+                erro = matcher.group();
+            }
         } finally {
             if (!"Listar".equalsIgnoreCase(cmd) && !"Buscar".equalsIgnoreCase(cmd)) {
                 alunos = null;
