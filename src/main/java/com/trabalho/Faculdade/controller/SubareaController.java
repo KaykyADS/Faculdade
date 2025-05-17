@@ -108,6 +108,7 @@ public class SubareaController {
         			sub.setNome(nome);
         			area = aService.getAreaById(idArea);
         			sub.setArea(area);
+					service.saveSubarea(sub);
         			saida = "Subárea atualizada com sucesso";
         			sub = null;
         		}

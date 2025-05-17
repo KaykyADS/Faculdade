@@ -29,7 +29,7 @@
 									<h1 class="text-center text-black fw-bold">Cadastro de Área</h1>
 								</div>
 								<div class="mb-3">
-									<input type="hidden" name="id" />
+									<input type="hidden" name="id" value="${area.id}"/>
 									<label for="nome" class="form-label text-black d-block text-start ps-0">Nome da Área</label>
 									<input id="input-nome" type="text" name="nome" class="form-control"
 										placeholder="Digite o Nome da Área" value="<c:out value='${area.nome}'/>"

@@ -11,15 +11,26 @@
     <groupId>com.trabalho</groupId>
     <artifactId>Faculdade</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Demo project for Spring Boot</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
+    <name>Faculdade</name>
+    <description>Atividade de laboratório de banco de dados de gerenciamento de TCC.</description>
+	<url />
+	<licenses>
+		<license />
+	</licenses>
+	<developers>
+		<developer>
+			<id>kayky</id>
+			<name>Kayky Rodrigues de Souza Costa</name>
+			<email>kayky.souzatl@gmail.com</email>
+			<organization>FATEC ZL</organization>
+			<organizationUrl></organizationUrl>
+		</developer>
+		<developer>
+			<id>alexandre</id>
+			<name>Alexandre Marques de Oliveira Filho</name>
+			<email>alefilho.temp.mail@gmail.com</email>
+		</developer>
+	</developers>
     <scm>
         <connection/>
         <developerConnection/>
