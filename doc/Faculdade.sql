@@ -14,19 +14,19 @@ BEGIN
         SELECT 1 FROM aluno WHERE grupo_id = @grupo_id AND percentualConclusao < 75
     )
     BEGIN
-        RAISERROR('Erro: Aluno(s) com menos de 75 por cento n√£o podem defender TCC1!', 16, 1);
+        RAISERROR('Erro: Aluno(s) com menos de 75 por cento n„o podem defender TCC1!', 16, 1);
         RETURN;
     END
     IF @tipoTcc = 'TCC2' AND EXISTS (
         SELECT 1 FROM aluno WHERE grupo_id = @grupo_id AND percentualConclusao < 90
     )
     BEGIN
-        RAISERROR('Erro: Aluno(s) com menos de 90 por cento n√£o podem defender TCC2!', 16, 1);
+        RAISERROR('Erro: Aluno(s) com menos de 90 por cento n„o podem defender TCC2!', 16, 1);
         RETURN;
     END
     IF DATEDIFF(DAY, GETDATE(), @data) < 7
     BEGIN
-        RAISERROR('Erro: A apresenta√ß√£o deve ser agendada com pelo menos 1 semana de anteced√™ncia!', 16, 1);
+        RAISERROR('Erro: A apresentaÁ„o deve ser agendada com pelo menos 1 semana de antecedÍncia!', 16, 1);
         RETURN;
     END
 END
@@ -74,7 +74,7 @@ BEGIN
             ) > 4
     )
     BEGIN
-        RAISERROR('Erro: O grupo n√£o pode ter mais que 4 alunos!', 16, 1);
+        RAISERROR('Erro: O grupo n„o pode ter mais que 4 alunos!', 16, 1);
         RETURN;
     END
     INSERT INTO aluno (ra, nome, percentualConclusao, grupo_id)
